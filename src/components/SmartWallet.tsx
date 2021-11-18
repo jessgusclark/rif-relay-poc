@@ -21,19 +21,19 @@ const SmartWallet: React.FC<Interface> = ({
     SmartWalletFactory.create(
       ethersProvider.getSigner(),
       smartWalletFactoryAddress
-    ).then((factory: SmartWalletFactory) => setSmartWallet(factory))
+    ).then((factory: SmartWalletFactory) => {
+      setSmartWallet(factory)
+      checkIfDeployed(factory)
+    })
   }, [ethersProvider])
 
-  const checkIfDeployed = async () => {
-    console.log(smartWallet)
+  const checkIfDeployed = (wallet: SmartWalletFactory) =>
+    wallet.isDeployed()
+      .then((response: boolean) => setIsDeployed(response))
 
-    // Check if Deployed:
-    smartWallet.isDeployed()
-      .then((response: boolean) => {
-        console.log('response', response)
-        setIsDeployed(response)
-      })
-  }
+  const deploy = () =>
+    smartWallet.deploy()
+      .then((deployResult: any) => console.log('isDeployed??', deployResult))
 
   const refreshBalance = () => {
     const token = new ethers.Contract(
@@ -49,14 +49,11 @@ const SmartWallet: React.FC<Interface> = ({
   return (
     <div>
       <h2>Smart Wallet Account</h2>
-      <p>
-        <button onClick={checkIfDeployed} disabled={isDeployed}>
-          Check deployment
-        </button>
-      </p>
-
       {smartWallet && <p><strong>Smart Wallet Address:</strong> {smartWallet.smartAddress}</p>}
-      <p><strong>Is deployed:</strong> {isDeployed.toString()} </p>
+      <p><strong>Is deployed:</strong>
+        {isDeployed.toString()}
+        <button onClick={deploy} disabled={isDeployed}>deploy</button>
+      </p>
       <p><strong>TKN Balance:</strong> {tokenBalance}
         <button
           disabled={!smartWallet}

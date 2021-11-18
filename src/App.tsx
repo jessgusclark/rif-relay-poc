@@ -12,14 +12,10 @@ function App () {
   const [ethersProvider, setEthersProvider] = useState<any | null>(null)
   const [rLoginResponse, setRloginResponse] = useState<any>()
 
-  // Accounts:
-  const [eoaAddress, setEoaAddress] = useState<string>('')
-
   const handleLogin = (rLoginresponse: any) => {
     setRloginResponse(rLoginresponse)
     const provider = new ethers.providers.Web3Provider(rLoginresponse.provider)
     setEthersProvider(provider)
-    setEoaAddress(rLoginresponse.provider.selectedAddress)
   }
 
   return (
@@ -27,7 +23,7 @@ function App () {
       {!rLoginResponse && <ProviderConnect setProvider={handleLogin} />}
       {rLoginResponse && (
         <div>
-          <EoaAccount eoaAddress={eoaAddress} provider={rLoginResponse.provider} />
+          <EoaAccount provider={rLoginResponse.provider} />
         </div>
       )}
       {ethersProvider && <SmartWallet ethersProvider={ethersProvider} />}
