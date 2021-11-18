@@ -6,6 +6,7 @@ import './App.scss'
 import ProviderConnect from './components/ProviderConnect'
 import EoaAccount from './components/EoaAccount'
 import SmartWallet from './components/SmartWallet'
+import RelayHub from './components/RelayHub'
 
 function App () {
   // Global State:
@@ -27,6 +28,7 @@ function App () {
         </div>
       )}
       {ethersProvider && <SmartWallet ethersProvider={ethersProvider} />}
+      <RelayHub />
     </div>
   )
 }

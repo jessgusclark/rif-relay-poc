@@ -17,6 +17,7 @@ const ProviderConnect: React.FC<Interface> = ({ setProvider }) => {
     <div>
       <h2>Connect to your Provider:</h2>
       <button onClick={handleLogin}>Connect!</button>
+      <hr />
     </div>
   )
 }
