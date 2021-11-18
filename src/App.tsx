@@ -1,24 +1,37 @@
-import React from 'react'
-import logo from './logo.svg'
+import React, { useState } from 'react'
+
+import { ethers } from 'ethers'
+
 import './App.scss'
+import ProviderConnect from './components/ProviderConnect'
+import EoaAccount from './components/EoaAccount'
+import SmartWallet from './components/SmartWallet'
 
 function App () {
+  // Global State:
+  const [ethersProvider, setEthersProvider] = useState<any | null>(null)
+  const [rLoginResponse, setRloginResponse] = useState<any>()
+
+  // Accounts:
+  const [eoaAddress, setEoaAddress] = useState<string>('')
+  const [smartAddress, setSmartAddress] = useState<string>('')
+
+  const handleLogin = (rLoginresponse: any) => {
+    setRloginResponse(rLoginresponse)
+    const provider = new ethers.providers.Web3Provider(rLoginresponse.provider)
+    setEthersProvider(provider)
+    setEoaAddress(rLoginresponse.provider.selectedAddress)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!rLoginResponse && <ProviderConnect setProvider={handleLogin} />}
+      {rLoginResponse && (
+        <div>
+          <EoaAccount eoaAddress={eoaAddress} provider={rLoginResponse.provider} />
+          <SmartWallet />
+        </div>
+      )}
     </div>
   )
 }
