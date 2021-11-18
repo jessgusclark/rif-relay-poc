@@ -1,21 +1,21 @@
 import axios, { AxiosResponse } from 'axios'
 import React, { useState } from 'react'
+import { HubDetails } from './RelayTransaction'
 
 interface Interface {
-
+  setHubDetails: (details: any) => void
 }
 
 const relayHubAddress = 'http://localhost:8090'
 
-const RelayHub: React.FC<Interface> = () => {
+const RelayHub: React.FC<Interface> = ({ setHubDetails }) => {
   const [error, setError] = useState<string | undefined>()
-  const [details, setDetails] = useState<any>()
 
   const getHubInfo = () => {
     setError(undefined)
     axios.get(`${relayHubAddress}/getAddr`)
       .then((resp: AxiosResponse) => resp.data)
-      .then((data: any) => setDetails(data))
+      .then((data: HubDetails) => setHubDetails(data))
       .catch((err: Error) => setError(err.toString()))
   }
 
@@ -23,15 +23,7 @@ const RelayHub: React.FC<Interface> = () => {
     <div>
       <h2>Relay Hub Info</h2>
       <p><strong>URL</strong> {relayHubAddress}</p>
-      <button onClick={getHubInfo} disabled={!!details}>get details from hub</button>
-      {details && (
-        <>
-          <h3>details</h3>
-          <pre style={{ width: '90%', textAlign: 'left' }}>
-            {JSON.stringify(details, null, 2)}
-          </pre>
-        </>
-      )}
+      <button onClick={getHubInfo}>get details from hub</button>
       {error && <p><strong>{error}</strong></p>}
       <hr />
     </div>

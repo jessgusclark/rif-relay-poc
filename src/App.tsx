@@ -7,11 +7,13 @@ import ProviderConnect from './components/ProviderConnect'
 import EoaAccount from './components/EoaAccount'
 import SmartWallet from './components/SmartWallet'
 import RelayHub from './components/RelayHub'
+import RelayTransaction, { HubDetails } from './components/RelayTransaction'
 
 function App () {
   // Global State:
   const [ethersProvider, setEthersProvider] = useState<any | null>(null)
   const [rLoginResponse, setRloginResponse] = useState<any>()
+  const [relayHubInfo, setRelayHubInfo] = useState<HubDetails | null>(null)
 
   const handleLogin = (rLoginresponse: any) => {
     setRloginResponse(rLoginresponse)
@@ -28,7 +30,10 @@ function App () {
         </div>
       )}
       {ethersProvider && <SmartWallet ethersProvider={ethersProvider} />}
-      <RelayHub />
+      <RelayHub setHubDetails={(details: HubDetails) => setRelayHubInfo(details)} />
+      {rLoginResponse && relayHubInfo &&
+        <RelayTransaction hubDetails={relayHubInfo} />
+      }
     </div>
   )
 }

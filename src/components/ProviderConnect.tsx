@@ -2,7 +2,7 @@ import React from 'react'
 import RLogin from '@rsksmart/rlogin'
 
 interface Interface {
-  setProvider: (any: void) => void
+  setProvider: (details: any) => void
 }
 
 const rLogin = new RLogin({ cacheProvider: false, supportedChains: [33] })
