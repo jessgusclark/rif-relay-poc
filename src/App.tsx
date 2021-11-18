@@ -14,7 +14,6 @@ function App () {
 
   // Accounts:
   const [eoaAddress, setEoaAddress] = useState<string>('')
-  const [smartAddress, setSmartAddress] = useState<string>('')
 
   const handleLogin = (rLoginresponse: any) => {
     setRloginResponse(rLoginresponse)
@@ -29,9 +28,9 @@ function App () {
       {rLoginResponse && (
         <div>
           <EoaAccount eoaAddress={eoaAddress} provider={rLoginResponse.provider} />
-          <SmartWallet />
         </div>
       )}
+      {ethersProvider && <SmartWallet ethersProvider={ethersProvider} />}
     </div>
   )
 }
