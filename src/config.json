@@ -1,0 +1,10 @@
+{
+  "rpcUrl": "http://localhost:4444",
+  "relayHubUrl": "http://localhost:8090",
+  "smartWalletFactoryAddress": "0xA2276921Af8c20865cC0980A7e6EE8B9C46BDdC0",
+  "tokenAddress": "0x726ecc75d5d51356aa4d0a5b648790cc345985ed",
+
+
+  "deployVerifierAddress" : "0x1eD614cd3443EFd9c70F04b6d777aed947A4b0c4",
+  "relayVerifierAddress": "0x5159345aaB821172e795d56274D0f5FDFdC6aBD9"
+}

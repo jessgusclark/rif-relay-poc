@@ -2,13 +2,11 @@ import { ethers } from 'ethers'
 import React, { useState, useEffect } from 'react'
 import { SmartWalletFactory } from '../lib/SmartWalletFactory'
 import erc20Abi from '../abi/erc20Abi.json'
+import { smartWalletFactoryAddress, tokenAddress } from '../config.json'
 
 interface Interface {
   ethersProvider: any
 }
-
-const smartWalletFactoryAddress = '0xA2276921Af8c20865cC0980A7e6EE8B9C46BDdC0'.toLowerCase()
-const tokenAddress = '0x726ecc75d5d51356aa4d0a5b648790cc345985ed'
 
 const SmartWallet: React.FC<Interface> = ({
   ethersProvider
