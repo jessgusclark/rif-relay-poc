@@ -1,14 +1,15 @@
 import React from 'react'
 import { HubDetails } from '../types/HubRelayGetAddr'
-import { RelayClient, RelayingResult, RelayProvider } from '@rsksmart/rif-relay-client'
+import { RelayClient } from '@rsksmart/rif-relay-client'
 import { TypedRequestData, RelayRequest, getDomainSeparatorHash } from '@rsksmart/rif-relay-common'
 
 // import { ethers } from 'ethers'
 // import { HttpProvider } from 'web3-core'
-import { deployVerifierAddress, relayVerifierAddress, rpcUrl, tokenAddress, smartWalletFactoryAddress } from '../config.json'
+import { relayHubUrl, deployVerifierAddress, relayVerifierAddress, rpcUrl, tokenAddress, smartWalletFactoryAddress } from '../config.json'
 import { SmartWalletFactory } from '../lib/SmartWalletFactory'
 import Web3 from 'web3'
 import log from 'loglevel'
+import axios from 'axios'
 
 interface Interface {
   provider: any
@@ -71,6 +72,9 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
       parseInt(hubDetails.chainId)
     )
 
+    const nonce = await provider.request({ method: 'eth_getTransactionCount', params: [provider.selectedAddress] })
+      .then((response: string) => parseInt(response))
+
     const relayRequest: RelayRequest = {
       request: {
         relayHub: hubDetails.relayHubAddress.toLowerCase(),
@@ -79,7 +83,7 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
         tokenContract: tokenAddress,
         value: '5',
         gas: '35000',
-        nonce: '1',
+        nonce: nonce.toString(), // <-- ugg, yes
         tokenAmount: '1',
         tokenGas: '600000',
         data: '0x'
@@ -103,8 +107,24 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
     provider.request({
       method: 'eth_signTypedData_v4',
       params: [provider.selectedAddress, JSON.stringify(unsignedTx)]
-    }).then((signedTx: string) => {
-      console.log('signed!', signedTx)
+    }).then((signature: string) => {
+      console.log('signed!', signature)
+
+      const signedRelayRequest = {
+        relayRequest,
+        metadata: {
+          relayHubAddress: hubDetails.relayHubAddress.toLowerCase(),
+          relayMaxNonce: 100000,
+          signature
+        }
+      }
+
+      console.log('axios post:', signedRelayRequest)
+
+      axios.post(`${relayHubUrl}/relay`, signedRelayRequest)
+        .then((response: any) => {
+          console.log('response...', response)
+        })
     })
   }
 
