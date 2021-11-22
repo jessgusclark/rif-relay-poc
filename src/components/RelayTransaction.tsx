@@ -91,7 +91,7 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
       request: {
         relayHub: hubDetails.relayHubAddress,
         from: provider.selectedAddress,
-        to: contracts.testToken,
+        to: '0x0000000000000000000000000000000000000000', // contracts.testToken,
         tokenContract: contracts.testToken,
         value: '0',
         gas: '85000', // 0x3938700', // '163000000', // '285000',
@@ -100,9 +100,9 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
         tokenGas: '50000',
 
         // send 7 tokens to the address 0x3dd03d7d6c3137f1eb7582ba5957b8a2e26f304a:
-        data: '0xa9059cbb0000000000000000000000003dd03d7d6c3137f1eb7582ba5957b8a2e26f304a0000000000000000000000000000000000000000000000006124fee993bc0000'
+        // data: '0xa9059cbb0000000000000000000000003dd03d7d6c3137f1eb7582ba5957b8a2e26f304a0000000000000000000000000000000000000000000000006124fee993bc0000'
         // data: '0xa9059cbb000000000000000000000000b708e6d2eff26fe248df7c3f47d2ad510c94ecb800000000000000000000000000000000000000000000000053444835ec580000'
-        // data: '0x'
+        data: '0x'
       },
       relayData: {
         gasPrice: '1', // '1000000000', // '220350',
