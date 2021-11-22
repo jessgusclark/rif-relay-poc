@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import React, { useState, useEffect } from 'react'
 import { SmartWalletFactory } from '../lib/SmartWalletFactory'
 import erc20Abi from '../abi/erc20Abi.json'
-import { smartWalletFactoryAddress, tokenAddress } from '../config.json'
+import { contracts } from '../config.json'
 
 interface Interface {
   ethersProvider: any
@@ -18,7 +18,8 @@ const SmartWallet: React.FC<Interface> = ({
   useEffect(() => {
     SmartWalletFactory.create(
       ethersProvider.getSigner(),
-      smartWalletFactoryAddress
+      contracts.smartWalletFactory
+      // smartWalletFactoryAddress
     ).then((factory: SmartWalletFactory) => {
       setSmartWallet(factory)
       checkIfDeployed(factory)
@@ -35,7 +36,7 @@ const SmartWallet: React.FC<Interface> = ({
 
   const refreshBalance = () => {
     const token = new ethers.Contract(
-      tokenAddress,
+      contracts.testToken,
       erc20Abi,
       ethersProvider
     )
@@ -52,7 +53,8 @@ const SmartWallet: React.FC<Interface> = ({
         {isDeployed.toString()}
         <button onClick={deploy} disabled={isDeployed}>deploy</button>
       </p>
-      <p><strong>TKN Balance:</strong> {tokenBalance}
+      <p><strong>TKN address:</strong> {contracts.testToken}</p>
+      <p><strong>TKN balance:</strong> {tokenBalance}
         <button
           disabled={!smartWallet}
           onClick={refreshBalance}>refresh</button>

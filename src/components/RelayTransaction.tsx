@@ -5,11 +5,11 @@ import { TypedRequestData, RelayRequest, getDomainSeparatorHash } from '@rsksmar
 
 // import { ethers } from 'ethers'
 // import { HttpProvider } from 'web3-core'
-import { relayHubUrl, deployVerifierAddress, relayVerifierAddress, rpcUrl, tokenAddress, smartWalletFactoryAddress } from '../config.json'
+import { relayHubUrl, rpcUrl, contracts } from '../config.json'
 import { SmartWalletFactory } from '../lib/SmartWalletFactory'
 import Web3 from 'web3'
 import log from 'loglevel'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 interface Interface {
   provider: any
@@ -27,8 +27,8 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
     logLevel: log.levels.DEBUG,
     relayHubAddress: hubDetails.relayHubAddress.toLowerCase(),
     chainId: parseInt(hubDetails.chainId),
-    deployVerifierAddress,
-    relayVerifierAddress,
+    deployVerifierAddress: contracts.smartWalletDeployVerifier.toLowerCase(),
+    relayVerifierAddress: contracts.smartWalletRelayVerifier.toLowerCase(),
     preferredRelays: ['http://localhost:8090']
   }
 
@@ -44,8 +44,9 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
 
     const smartWallet = await SmartWalletFactory.create(
       ethersProvider.getSigner(),
-      smartWalletFactoryAddress
+      contracts.smartWalletFactory // smartWalletFactoryAddress
     )
+    console.log('smartWallet', smartWallet)
     /*
     const txOptions = {
       from: provider.selectedAddress.toLowerCase(),
@@ -72,34 +73,40 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
       parseInt(hubDetails.chainId)
     )
 
-    const nonce = await provider.request({ method: 'eth_getTransactionCount', params: [provider.selectedAddress] })
+    // reference:
+    // https://github.com/rsksmart/rif-relay/blob/master/test/relayclient/RelayClient.test.ts#L340
+    const eoaNonce = await provider.request({ method: 'eth_getTransactionCount', params: [provider.selectedAddress] })
+      .then((response: string) => parseInt(response))
+
+    const smartWalletNonce = await provider.request({ method: 'eth_getTransactionCount', params: [smartWallet.smartAddress] })
       .then((response: string) => parseInt(response))
 
     const relayRequest: RelayRequest = {
       request: {
         relayHub: hubDetails.relayHubAddress.toLowerCase(),
         from: provider.selectedAddress.toLowerCase(),
-        to: '0x387699a87e4f37a9708bf85ef6af822619bd8e8a', // <-- me
-        tokenContract: tokenAddress,
-        value: '5',
+        to: contracts.testToken,
+        tokenContract: contracts.testToken,
+        value: '0',
         gas: '35000',
-        nonce: nonce.toString(), // <-- ugg, yes
+        nonce: eoaNonce.toString(), // smartWalletNonce.toString(), // <-- ugg, yes toString()
         tokenAmount: '1',
-        tokenGas: '600000',
-        data: '0x'
+        tokenGas: '50000',
+        // send 7 tokens to the address 0xb708e6d2eff26fe248df7c3f47d2ad510c94ecb8:
+        data: '0xa9059cbb000000000000000000000000b708e6d2eff26fe248df7c3f47d2ad510c94ecb80000000000000000000000000000000000000000000000006124fee993bc0000'
       },
       relayData: {
         gasPrice: '65000',
         domainSeparator, // calculated above
         relayWorker: hubDetails.relayWorkerAddress,
         callForwarder: smartWallet.smartAddress, // the one that owns the TOKEN for payment
-        callVerifier: relayVerifierAddress
+        callVerifier: contracts.smartWalletRelayVerifier.toLowerCase()
       }
     }
 
     const unsignedTx = new TypedRequestData(
       parseInt(hubDetails.chainId),
-      relayVerifierAddress,
+      relayRequest.relayData.callForwarder, //
       relayRequest
     )
     console.log('unsignedTx', unsignedTx)
@@ -114,7 +121,7 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
         relayRequest,
         metadata: {
           relayHubAddress: hubDetails.relayHubAddress.toLowerCase(),
-          relayMaxNonce: 100000,
+          relayMaxNonce: 1000000,
           signature
         }
       }
@@ -122,8 +129,12 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
       console.log('axios post:', signedRelayRequest)
 
       axios.post(`${relayHubUrl}/relay`, signedRelayRequest)
-        .then((response: any) => {
-          console.log('response...', response)
+        .then((response: AxiosResponse) => response.data)
+        .then((data: any) => {
+          console.log('response...', data)
+          if (data.error) {
+            console.log('ERROR!', data.error)
+          }
         })
     })
   }

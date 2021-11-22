@@ -1,10 +1,24 @@
 {
   "rpcUrl": "http://localhost:4444",
   "relayHubUrl": "http://localhost:8090",
-  "smartWalletFactoryAddress": "0xA2276921Af8c20865cC0980A7e6EE8B9C46BDdC0",
-  "tokenAddress": "0x726ecc75d5d51356aa4d0a5b648790cc345985ed",
 
-
-  "deployVerifierAddress" : "0x1eD614cd3443EFd9c70F04b6d777aed947A4b0c4",
-  "relayVerifierAddress": "0x5159345aaB821172e795d56274D0f5FDFdC6aBD9"
+  "contracts_INFO": [
+    "not all the values below are used, this is a copy/paste of the deployment 33 node",
+    "they are this way to make sure they are all correct. Note that testToken needs to",
+    "be registerd with the relay server as a payment option."
+  ],
+  "contracts": {
+      "penalizer":"0x4977f70457fFeF89025B49dFc0DFAD60982bAC7c",
+      "relayHub":"0x61026975E4dCc28bF56fE1Da18c7482922501C08",
+      "smartWallet":"0xD7898483B4fD49CFc847C63E4825D3900EBFcB55",
+      "smartWalletFactory":"0x57153C4a4b3cE7D627D67FAc081733F3735fCd57",
+      "smartWalletDeployVerifier":"0x792330387A4318c20f8Fb839ABBf09F2bfEd6f56",
+      "smartWalletRelayVerifier":"0x4F7b5156094e8cFcda28821dC05c5d2Cea58448f",
+      "customSmartWallet":"0x7b089cfE50C1a5fE5b0DA352348A43bBa81ADdd4",
+      "customSmartWalletFactory":"0x2a468fbfcfc86f84535d5631Bc1e591cF4f34CD0",
+      "customSmartWalletDeployVerifier":"0x423c8Ded907505378364eB52d5cbF1fC3b68dF19",
+      "customSmartWalletRelayVerifier":"0xB7548b871f60dc23233521Cea54Acbb7F0CaDbA6",
+      "sampleRecipient":"0x7Aa98966d3FE1BbDd1fbb2F5Ef761462Db6f642e",
+      "testToken":"0xF76e6b7db78ac46BBDC7F9013CE4c761B7E7024e"
+  }
 }
