@@ -18,7 +18,7 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
 
     const smartWallet = await SmartWalletFactory.create(
       ethersProvider.getSigner(),
-      contracts.smartWalletFactory // smartWalletFactoryAddress
+      contracts.smartWalletFactory
     )
     console.log('smartWallet', smartWallet)
 
@@ -28,20 +28,21 @@ const RelayTransaction: React.FC<Interface> = ({ hubDetails, provider, ethersPro
       parseInt(hubDetails.chainId)
     )
 
-    const smartWalletNonce = await smartWallet.nonce()
+    // const smartWalletNonce = await smartWallet.nonce()
+    const smartWalletNonce = await smartWallet.smartWalletFactoryContract.nonce(smartWallet.smartAddress)
 
     const relayRequest: RelayRequest = {
       request: {
         relayHub: hubDetails.relayHubAddress,
         from: provider.selectedAddress,
-        to: '0x0000000000000000000000000000000000000000', // contracts.testToken,
+        to: '0x0000000000000000000000000000000000001234', // contracts.testToken,
         tokenContract: contracts.testToken,
         value: '0',
         gas: '85000', // 0x3938700', // '163000000', // '285000',
-        nonce: smartWalletNonce.toString(), // <-- ugg, yes toString()
+        nonce: '0x01', // smartWalletNonce.toString(), // <-- ugg, yes toString()
         tokenAmount: '1',
-        tokenGas: '50000',
-        data: '0x'
+        tokenGas: '150000',
+        data: '0xabcd'
       },
       relayData: {
         gasPrice: '1', // '1000000000', // '220350',
